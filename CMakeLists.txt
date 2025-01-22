@@ -34,3 +34,5 @@ add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 target_link_libraries(${PROJECT_NAME} ${UHD_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${YAML_CPP_LIBRARIES})
+
+install(TARGETS ${PROJECT_NAME} DESTINATION /usr/local/bin)
