@@ -1,8 +1,9 @@
-rx_rate: 2e6              # Sampling rate in S/s
+rf_type: uhd             # what device to use ZMQ | UHD
+device_args: type=b200   # device arguments
+rx_rate: 2e6             # Sampling rate in S/s
 rx_freq: 915e6           # Center frequency in Hz
 rx_gain: 40              # Gain in dB
 duration_seconds: 5.0    # Duration to receive in seconds
 start_time_offset: 0.2   # Start time offset in seconds
 cpu_format: "fc32"       # CPU format
 wire_format: "sc16"      # Wire format
-
