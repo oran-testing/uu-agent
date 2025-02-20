@@ -13,14 +13,15 @@ namespace bpo = boost::program_options;
 
 // Parse command-line arguments
 void parse_args(all_args_t &args, int argc, char *argv[]) {
-  std::string config_file = "";
+  std::string conf_filepath = "";
   bpo::options_description general("General options");
   general.add_options()("help,h", "Produce help message")(
-      "version,v", "Print version information and exit");
+      "version,v", "Print version information and exit")(
+      "config,c", bpo::value<std::string>(&conf_filepath),
+      "Configuration file");
 
   bpo::options_description common("Configuration options");
-  common.add_options()("config,c", bpo::value<std::string>(&config_file),
-                       "Configuration file")(
+  common.add_options()(
       "rf.type",
       bpo::value<std::string>(&args.rf.rf_type)->default_value("uhd"),
       "RF hardware type")(
@@ -52,20 +53,20 @@ void parse_args(all_args_t &args, int argc, char *argv[]) {
   bpo::store(bpo::parse_command_line(argc, argv, all_options), vm);
   bpo::notify(vm);
 
-  if (vm.count("config")) {
-    std::ifstream config_file(vm["config"].as<std::string>());
-    if (config_file) {
-      bpo::store(bpo::parse_config_file(config_file, all_options), vm);
-    } else {
-      std::cerr << "Failed to open config file: "
-                << vm["config"].as<std::string>() << std::endl;
-      exit(1);
-    }
-  }
-
   if (vm.count("help")) {
     std::cout << all_options << std::endl;
     exit(0);
+  }
+
+  if (vm.count("config")) {
+    std::ifstream config_file(conf_filepath);
+    if (config_file) {
+      bpo::store(bpo::parse_config_file(config_file, common), vm);
+      bpo::notify(vm);
+    } else {
+      std::cerr << "Failed to open config file: " << conf_filepath << std::endl;
+      exit(1);
+    }
   }
 }
 
