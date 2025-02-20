@@ -1,3 +1,6 @@
+#ifndef ARGS_H
+#define ARGS_H
+
 #include <cstddef>
 #include <string>
 
@@ -16,3 +19,5 @@ typedef struct rf_args_s {
 typedef struct all_args_s {
   rf_args_t rf;
 } all_args_t;
+
+#endif // !ARGS_H

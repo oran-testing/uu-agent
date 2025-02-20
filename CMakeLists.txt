@@ -53,3 +53,9 @@ include_directories(lib/include)
 
 add_subdirectory(lib)
 add_subdirectory(uuagent)
+
+install(
+  PROGRAMS
+  ${CMAKE_BINARY_DIR}/uuagent/uuagent
+  DESTINATION /usr/local/bin
+)
