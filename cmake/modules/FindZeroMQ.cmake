@@ -20,20 +20,24 @@
 
 message(STATUS "FINDING ZEROMQ.")
 if(NOT ZEROMQ_FOUND)
-    pkg_check_modules (ZEROMQ_PKG ZeroMQ)
+    pkg_check_modules (ZEROMQ_PKG libzmq)
 
     find_path(ZEROMQ_INCLUDE_DIRS
             NAMES zmq.h
             PATHS ${ZEROMQ_PKG_INCLUDE_DIRS}
+            /usr/include
+            /usr/local/include
             /usr/include/zmq
             /usr/local/include/zmq
             )
 
     find_library(ZEROMQ_LIBRARIES
-            NAMES zmq
+            NAMES zmq libzmq zmq.so.5
             PATHS ${ZEROMQ_PKG_LIBRARY_DIRS}
             /usr/lib
             /usr/local/lib
+            /usr/lib/x86_64-linux-gnu
+            /usr/lib64
             /usr/lib/arm-linux-gnueabihf
             )
 

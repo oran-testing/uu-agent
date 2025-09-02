@@ -1,4 +1,7 @@
 
 
-#define UUAGENT_SUCCESS 0
-#define UUAGENT_ERROR 1
+
+typedef enum uuagent_error_enum {
+  UUAGENT_SUCCESS = 0,
+} uuagent_error_e;
+  
