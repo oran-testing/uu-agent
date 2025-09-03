@@ -37,7 +37,8 @@ uuagent_error_e RF_ZMQ::collect_iq_data(const all_args_t& args) {
         // Lets first print the successful connection
         if (!is_connected) {
           std::cout << "ZMQ: Connection successful with " << address
-                    <<"\nReceiving samples...\n(Patiencee...)" << std::endl;
+                    <<"\nReceiving " << args.rf.num_samples <<" samples...\n(Patiencee...)"
+                    << std::endl;
           is_connected = true;
         }
 

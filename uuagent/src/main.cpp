@@ -75,7 +75,7 @@ uuagent_error_e collect_iq_data(const all_args_t& args) {
     std::cerr << "Failed to create RF instance for type: " << args.rf.rf_type << std::endl;
     return UUAGENT_INVALID_RF_TYPE;
   }
-  
+
   return rf_instance->collect_iq_data(args);
 }
 
@@ -88,6 +88,6 @@ int main(int argc, char *argv[]) {
     std::cerr << "Error: collect_iq_data failed with error code - " << result << std::endl;
     return static_cast<int>(result);
   }
-  
+
   return 0;
 }
