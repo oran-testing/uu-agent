@@ -1,13 +1,13 @@
 #include <boost/program_options.hpp>
 #include <boost/program_options/parsers.hpp>
 
-#include <boost/program_options.hpp>
 #include <cstddef>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 
 #include "args.h"
-#include "iq_collection.h"
+#include "rf_base.h"
 
 namespace bpo = boost::program_options;
 
@@ -58,21 +58,41 @@ void parse_args(all_args_t &args, int argc, char *argv[]) {
     exit(0);
   }
 
-  if (vm.count("config")) {
-    std::ifstream config_file(conf_filepath);
-    if (config_file) {
-      bpo::store(bpo::parse_config_file(config_file, common), vm);
-      bpo::notify(vm);
-    } else {
-      std::cerr << "Failed to open config file: " << conf_filepath << std::endl;
-      exit(1);
-    }
+  if (!vm.count("config")) {
+    throw std::runtime_error("argument --config is required");
   }
+
+  std::ifstream config_file(conf_filepath);
+  if (config_file) {
+    bpo::store(bpo::parse_config_file(config_file, common), vm);
+    bpo::notify(vm);
+  } else {
+    std::cerr << "Failed to open config file: " << conf_filepath << std::endl;
+    exit(1);
+  }
+}
+
+uuagent_error_e collect_iq_data(const all_args_t &args) {
+  auto rf_instance = create_rf_instance(args.rf.rf_type);
+  if (!rf_instance) {
+    std::cerr << "Failed to create RF instance for type: " << args.rf.rf_type
+              << std::endl;
+    return UUAGENT_INVALID_RF_TYPE;
+  }
+
+  return rf_instance->collect_iq_data(args);
 }
 
 int main(int argc, char *argv[]) {
   all_args_t args;
   parse_args(args, argc, argv);
-  collect_iq_data(args);
+
+  uuagent_error_e result = collect_iq_data(args);
+  if (result != UUAGENT_SUCCESS) {
+    std::cerr << "Error: collect_iq_data failed with error code - " << result
+              << std::endl;
+    return static_cast<int>(result);
+  }
+
   return 0;
 }
