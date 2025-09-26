@@ -52,9 +52,8 @@ include_directories(${YAML_CPP_INCLUDE_DIRS})
 
 find_package(Boost REQUIRED COMPONENTS program_options)
 
-include_directories(lib/include)
+include_directories(uuagent/hdr)
 
-add_subdirectory(lib)
 add_subdirectory(uuagent)
 
 install(
