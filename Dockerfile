@@ -1,37 +1,24 @@
-ARG OS_VERSION=24.04
-ARG LIB=uhd
-ARG LIB_VERSION=4.7.0.0
-ARG MARCH=native
-ARG NUM_CORES=""
+FROM ghcr.io/oran-testing/components_base AS builder
 
-FROM ubuntu:$OS_VERSION
+WORKDIR /uuagent
 
-ENV CONFIG="configs/basic_listener.yaml"
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y \
-    cmake \
-    make \
-    gcc \
-    g++ \
-    uhd-host \
-    libuhd-dev \
-    libyaml-cpp-dev
-
-
-COPY . /app
-
-WORKDIR /app
+COPY . .
 
 RUN mkdir -p build && rm -rf build/*
 
-WORKDIR /app/build
+WORKDIR /uuagent/build
 
 RUN cmake ../ && \
     make -j$(nproc) && \
     make install
 
-WORKDIR /app
+FROM alpine:latest
+ENV PYTHONUNBUFFERED=1
+RUN apk add --no-cache ca-certificates && update-ca-certificates || true
 
-CMD [ "sh", "-c", "/usr/local/bin/uuagent \"${CONFIG}\"" ]
+COPY --from=builder /usr/local /usr/local
+
+ENV ARGS=""
+CMD [ "sh", "-c", "/usr/local/bin/uuagent -c /uu-agent.conf ${ARGS}" ]
+
+#CMD [ "sh", "-c", "/usr/local/bin/uuagent /uu-agent.conf" ]
