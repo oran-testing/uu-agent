@@ -12,7 +12,7 @@ class uu_agent(WorkerThread):
         self.config.container_volumes[self.config.config_file] = {"bind": "/uu-agent.conf", "mode": "ro"} #update the config file binding
 
         # Add IQ output volume
-        iq_output_dir = self.process_config.get("iq_output_dir", f"{os.getenv('DOCKER_SYSTEM_DIRECTORY')}/.uuagent_results")
+        iq_output_dir = self.config.process_config.get("iq_output_dir", f"{os.getenv('DOCKER_SYSTEM_DIRECTORY')}/.uuagent_results")
         self.config.container_volumes[iq_output_dir] = {"bind": "/output/", "mode": "rw"}
         
         self._cleanup_old_iq_files(iq_output_dir)
